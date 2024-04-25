@@ -2,7 +2,7 @@ import ProductCard from "@/components/ProductCard";
 import { stripe } from "@/utils/stripe";
 
 export default function Home({ products }) {
-  console.log(products);
+  // console.log(products);
 
   return (
     <div className="container xl:max-w-screen-xl mx-auto py-12 px-6">
