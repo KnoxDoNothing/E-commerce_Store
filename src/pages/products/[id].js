@@ -1,8 +1,26 @@
 import { stripe } from "@/utils/stripe";
+import {
+  CheckIcon,
+  MinusSmallIcon,
+  PlusSmallIcon,
+} from "@heroicons/react/24/solid";
 import Image from "next/image";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
 
 export default function ProductPage({ product }) {
   // console.log('product',product);
+
+  const [count, setCount] = useState(1);
+  const { addItem } = useShoppingCart();
+
+  function onAddToCart(event) {
+    event.preventDefault();
+    const id = toast.loading(`Adding ${count} item${count > 1 ? "s" : ""}`);
+    addItem(product, { count });
+    toast.success(`${count} ${product.name} added`, { id });
+  }
 
   return (
     <div className="container lg:max-w-screen-lg mx-auto py-12 px-6 ">
@@ -20,7 +38,45 @@ export default function ProductPage({ product }) {
 
         <div className="w-full flex-1 max-w-md border border-opacity-50 rounded-md shadow-lg p-6 bg-white">
           <h2 className="text-3x1 font-semibold">{product.name}</h2>
-          <p className="pt-2 flex items-center space-x-2"></p>
+          <p className="pt-2 flex items-center space-x-2">
+            <CheckIcon className="text-lime-500 w-5 h-5 " />
+            <span className="font-semibold">In Stock</span>
+          </p>
+          <div className="mt-4 border-t pt-4">
+            <p className="text-gray-500">Price:</p>
+            <p className="">
+              {formatCurrencyString({
+                value: product.price,
+                currency: product.currency,
+              })}
+            </p>
+          </div>
+
+          <div className="mt-4 border-t pt-4">
+            <p className="text-gray-500">Quantity:</p>
+            <div className="mt-1 flex items-center space-x-3">
+              <button
+                disabled={count <= 1}
+                onClick={() => setCount(count - 1)}
+                className="p-1 rounded-md hover:bg-rose-100 hover:text-rose-500"
+              >
+                <MinusSmallIcon className="w-6 h-6 flex-shrink-0" />
+              </button>
+              <p className="font-semibold text-x1">{count}</p>
+              <button className="p-1 rounded-md hover:bg-green-100 hover:text-green-500">
+                <PlusSmallIcon
+                  onClick={() => setCount(count + 1)}
+                  className="w-6 h-6 flex-shrink-0"
+                />
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={onAddToCart}
+            className="w-full mt-4 border border-lime-500 py-2 px-6 bg-lime-500 hover:bg-lime-600 focus:ring-4 focus:ring-opacity-50 focus:ring-lime-500 text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-md"
+          >
+            Add to cart
+          </button>
         </div>
       </div>
     </div>
