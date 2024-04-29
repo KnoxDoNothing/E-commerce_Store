@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useShoppingCart } from "use-shopping-cart";
-import CartProduct from "./CartProduct";
+import CartProduct from "../components/CartProduct";
 import { useState } from "react";
 import axios from "axios";
 
@@ -12,12 +12,13 @@ export default function CartPage() {
     cartDetails,
     redirectToCheckout,
   } = useShoppingCart();
-  const { isRedirecting, setIsRedirecting } = useState(false);
+  const [isRedirecting, setRedirecting] = useState(false);
 
-  async function onCheckout() {
+  async function onCheckout(event) {
+    event.preventDefault();
     if (cartCount > 0) {
       try {
-        setIsRedirecting(true);
+        setRedirecting(true);
         const { id } = await axios
           .post("/api/checkout-sessions", cartDetails)
           .then((res) => res.data);
@@ -25,14 +26,12 @@ export default function CartPage() {
         const result = await redirectToCheckout(id);
 
         if (result?.error) {
-          console.log("Error in result:",result);
-          
+          console.log("Error in result:", result);
         }
       } catch (error) {
-        console.log("Error:",error);
-        
+        console.log("Error:", error);
       } finally {
-        setIsRedirecting(false)
+        setRedirecting(false);
       }
     }
   }
@@ -74,8 +73,12 @@ export default function CartPage() {
               Total:{" "}
               <span className=" font-semibold"> {formattedTotalPrice} </span>
             </p>
-            <button disabled={isRedirecting} className="border rounded py-2 px-6 bg-yellow-500 hover:bg-yellow-600 border-yellow-500 hover:border-yellow-600 focus:ring-4 focus:ring-opacity-50 focus:ring-yellow-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed  disabled:hover:bg-yellow-500 mt-4 max-w-max">
-              {isRedirecting?"Redirecting..." :'Go to Checkout'}
+            <button
+              onClick={onCheckout}
+              disabled={isRedirecting}
+              className="border rounded py-2 px-6 bg-yellow-500 hover:bg-yellow-600 border-yellow-500 hover:border-yellow-600 focus:ring-4 focus:ring-opacity-50 focus:ring-yellow-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed  disabled:hover:bg-yellow-500 mt-4 max-w-max"
+            >
+              {isRedirecting ? "Redirecting..." : "Go to Checkout"}
             </button>
           </div>
         </div>
