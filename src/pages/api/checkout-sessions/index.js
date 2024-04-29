@@ -21,7 +21,6 @@ export default async function handler(req, res) {
         };
       });
       const lineItems = validateCartItems(products, cartDetails);
-
       const session = await stripe.checkout.sessions.create({
         mode: "payment",
         payment_method_types: ["card"],
