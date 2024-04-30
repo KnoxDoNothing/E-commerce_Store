@@ -1,12 +1,13 @@
 const Stripe = require("stripe");
 const products = require("./products");
 
-const stripe = Stripe('sk_test_51PAqgQJzZiryIXtcGPeN9gWH4ZfsvhfKeGn2UJN8aqwfPQPqlMs8LMOonIhKDb8azrVvdnewjGaIrl9qtk1Zo1Ga00ioc4Gaji');
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 (async () => {
   for (const product of products) {
     const stripeProduct = await stripe.products.create({
       name: product.name,
+      node,
       default_price_data: {
         currency: product.currency,
         unit_amount_decimal: product.price,
