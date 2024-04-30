@@ -23,6 +23,8 @@ export async function getStaticProps() {
 
   const products = inventory.data.map((product) => {
     const price = product.default_price;
+
+    
     return {
       currency: price.currency,
       id: product.id,

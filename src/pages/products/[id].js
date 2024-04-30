@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import { formatCurrencyString, useShoppingCart } from "use-shopping-cart";
 
 export default function ProductPage({ product }) {
-  // console.log('product',product);
+  //  console.log('product',product);
 
   const [count, setCount] = useState(1);
   const { addItem } = useShoppingCart();
